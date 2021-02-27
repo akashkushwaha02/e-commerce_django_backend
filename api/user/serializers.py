@@ -25,6 +25,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
         extra_kwargs = {'password':{'write_only':True}}
-        Fields = ['name','email','password','phone','gender','is_active','is_staff','is_superuser']
+        fields = ['first_name','email','phone','gender','is_active','is_staff','is_superuser']
         
 
