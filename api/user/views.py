@@ -31,12 +31,12 @@ def signin(request):
     if len(password) < 3:
         return JsonResponse({'error':'password needs to be atleast length 3'})
 
-    UserModel = get_user_model()
+    userModel = get_user_model()
     
     try:
-        user = UserModel.objects.get(email=username)
+        user = userModel.objects.get(email=username)
         if user.check_password(password):
-            usr_dict = UserModel.objects.filter(email=username).values().first()
+            usr_dict = userModel.objects.filter(email=username).values().first()
 
             if user.session_token !="0":
                 user.session_token = "0"
@@ -50,20 +50,20 @@ def signin(request):
             return JsonResponse({'token': token,'user':usr_dict})
         else:
             return JsonResponse({'error':'Invalid password'})
-    except UserModel.DoesNotExist:
+    except userModel.DoesNotExist:
         return JsonResponse({'error':'Invalid email'})
 
 
 def signout(request,id):
     logout(request)
 
-    UserModel = get_user_model()
+    userModel = get_user_model()
 
     try:
-        user = UserModel.objects.get(pk=id)
+        user = userModel.objects.get(pk=id)
         user.session_token = "0"
         user.save()
-    except UserModel.DoesNotExist:
+    except userModel.DoesNotExist:
         return JsonResponse({'error': 'something went wrong or invalide user id'})
 
     return JsonResponse({'success':'Logout successful'})
