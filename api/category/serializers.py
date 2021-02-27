@@ -3,5 +3,5 @@ from .models import Category
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        models = Category
+        model = Category
         fields = ['name','description']

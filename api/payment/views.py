@@ -33,5 +33,27 @@ def generate_token(request,id,token):
     if not validate_session_token(id,token):
         return JsonResponse({'error':'Invalid session,Please login again'})
 
-    return JsonResponse({'clientToken':gateway.client_token.generate(),'success':'session geenrated succesfully'}
-    )
+    return JsonResponse({'clientToken':gateway.client_token.generate(),'success':'session geenrated succesfully'})
+
+@csrf_exempt
+def process_payment(request,id,token):
+    if not validate_session_token(id,token):
+        return JsonResponse({'error':'Invalid session,Please login again'})
+
+    #this name come from frontend 
+    nonce_from_client = request.POST['paymentMethodNonce']
+    amount_from_client = request.POST['amount']
+
+    result = gateway.transaction.sale({
+        "amount": amount_from_client,
+        "paymentMethodNonce": nonce_from_client,
+        "options": {
+            "submit_for_settlement":True 
+        }
+    })
+
+    if result.is_success:
+        print(result)
+        return JsonResponse({'success':result.is_success,"transaction":{'id':result.transaction.id,"amount": result.transaction.amount}})
+    else:
+        return JsonResponse({'error': True,'success':False})
